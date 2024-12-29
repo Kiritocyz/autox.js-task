@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Get APK files
         run: |
+          cd ..
           apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
           echo "Current directory: $(pwd)"
