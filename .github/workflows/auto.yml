@@ -20,6 +20,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           apk_files=$(find . -name "*v6*.apk")
           echo "Found APK files: $apk_files"
+          ls -l
 
       - name: Extract version from APK file name
         run: |
