@@ -15,10 +15,11 @@ jobs:
         run: |
           apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
-          echo "Current Directory:"
-          pwd
-          echo "Listing all files:"
-          ls -la
+          echo "Current directory: $(pwd)"
+          echo "Workspace directory: $GITHUB_WORKSPACE"
+          cd $GITHUB_WORKSPACE
+          apk_files=$(find . -name "*v6*.apk")
+          echo "Found APK files: $apk_files"
 
       - name: Extract version from APK file name
         run: |
