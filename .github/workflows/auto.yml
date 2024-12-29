@@ -15,7 +15,7 @@ jobs:
         run: |
           
           # apk_files=$(find . -name "*v6*.apk")
-          apk_files=$(find . -name "*.md")
+          apk_files=$(find .. -name "*.md")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
           echo "Current directory: $(pwd)"
           echo "Workspace directory: $GITHUB_WORKSPACE"
