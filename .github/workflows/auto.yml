@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '*.apk'
+      - '**/v6*.apk'
 
 jobs:
   upload:
@@ -13,14 +13,14 @@ jobs:
     steps:
       - name: Get APK files
         run: |
-          apk_files=$(find . -name "*.apk")
+          apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
       - name: Wait for second file to be uploaded
         run: |
           while true
           do
-            new_apk_files=$(find . -name "*.apk" -cnewer "$(<${{ env.APK_FILES }} | head -n 1)")
+            new_apk_files=$(find . -name "*v7*.apk" -cnewer "$(<${{ env.APK_FILES }} | head -n 1)")
             if [ -n "$new_apk_files" ]; then
               echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
               break
