@@ -22,8 +22,8 @@ jobs:
           if [ -z "$apk_files" ]; then
             echo "No APK files found"
           fi
-          ls -la
-          exit 0
+          ls -la *apk
+          exit 1
 
       - name: Extract version from APK file name
         run: |
