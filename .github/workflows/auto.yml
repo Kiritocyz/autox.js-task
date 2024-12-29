@@ -14,15 +14,15 @@ jobs:
       - name: Get APK files
         run: |
           apk_files=$(find . -name "*v6*.apk")
-          echo "${apk_files}"
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
-          echo "${APK_FILES}"
+          echo "APK_FILES: ${{ env.APK_FILES }}"
 
       - name: Extract version from APK file name
         run: |
           # 提取版本号，假设版本号格式是类似 "_v6.0.apk"
           version=$(echo ${{ env.APK_FILES }} | sed 's/.*_\(.*\).apk/\1/')
           echo "VERSION=$version" >> $GITHUB_ENV
+          echo "VERSION: ${{ env.VERSION }}"
 
       - name: Wait for second file to be uploaded
         run: |
@@ -34,7 +34,7 @@ jobs:
               echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
               break
             fi
-            echo "Waiting for v7 APK with version ${VERSION}..."
+            echo "Waiting for v7 APK with version ${VERSION},${{ env.VERSION }}..."
             sleep 10
           done
 
