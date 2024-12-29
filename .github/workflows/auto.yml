@@ -17,6 +17,7 @@ jobs:
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
           echo "Current directory: $(pwd)"
           echo "Workspace directory: $GITHUB_WORKSPACE"
+          ls -l
           cd $GITHUB_WORKSPACE
           apk_files=$(find . -name "*v6*.apk")
           echo "Found APK files: $apk_files"
