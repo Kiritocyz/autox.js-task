@@ -11,11 +11,14 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: "main"
+      
       - name: Get APK files
-        run: |
-          
-          # apk_files=$(find . -name "*v6*.apk")
-          apk_files=$(find .. -name "*.md")
+        run: |          
+          apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
           echo "Current directory: $(pwd)"
           echo "Workspace directory: $GITHUB_WORKSPACE"
