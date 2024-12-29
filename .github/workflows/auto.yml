@@ -56,9 +56,7 @@ jobs:
           PRERELEASE: false
           TAG_NAME: ${{ env.NEW_TAG }}
         with:
-          file: |
-            ${{ env.APK_FILES }} 
-            ${{ env.NEW_APK_FILES }}
+          file: ${{ env.APK_FILES }} ${{ env.NEW_APK_FILES }}
 
       - name: Delete old APK files
         run: |
