@@ -1,0 +1,58 @@
+name: Upload APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.apk'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get APK files
+        run: |
+          apk_files=$(find . -name "*.apk")
+          echo "APK_FILES=$apk_files" >> $GITHUB_ENV
+
+      - name: Wait for second file to be uploaded
+        run: |
+          while true
+          do
+            new_apk_files=$(find . -name "*.apk" -newer ${{ env.APK_FILES }})
+            if [ -n "$new_apk_files" ]; then
+              echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
+              break
+            fi
+            sleep 10
+          done
+
+      - name: Extract version from APK file name
+        run: |
+          version=$(echo ${{ env.APK_FILES }} | sed 's/.*_\(.*\).apk/\1/')
+          echo "VERSION=$version" >> $GITHUB_ENV
+
+      - name: Update release tag
+        run: |
+          new_tag=$(echo ${{ env.VERSION }})
+          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+
+      - name: Publish APK Releases
+        uses: svenstaro/upload-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NAME: 'My App Release'
+          RELEASE_DESCRIPTION: 'Automated APK release'
+          DRAFT: false
+          PRERELEASE: false
+          TAG_NAME: ${{ env.NEW_TAG }}
+        with:
+          files: ${{ env.APK_FILES }} ${{ env.NEW_APK_FILES }}
+
+      - name: Delete old APK files
+        run: |
+          old_apk_files=$(find . -name "*.apk" -not -name "*${{ env.VERSION }}*")
+          if [ -n "$old_apk_files" ]; then
+            rm -f $old_apk_files
+          fi
