@@ -56,7 +56,7 @@ jobs:
           PRERELEASE: false
           TAG_NAME: ${{ env.NEW_TAG }}
         with:
-          files: |
+          file: |
             ${{ env.APK_FILES }} 
             ${{ env.NEW_APK_FILES }}
 
