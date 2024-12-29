@@ -12,9 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: "main"
+        uses: actions/checkout@v4
       
       - name: Get APK files
         run: |          
@@ -40,23 +38,20 @@ jobs:
             echo "Waiting for v7 APK with version ${VERSION}..."
             sleep 10
           done
-
-      - name: Update release tag
-        run: |
-          new_tag="${{ env.VERSION }}"
-          echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-
+      
       - name: Publish APK Releases
-        uses: svenstaro/upload-release-action@v2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           RELEASE_NAME: 'My App Release'
           RELEASE_DESCRIPTION: 'Automated APK release'
           DRAFT: false
           PRERELEASE: false
-          TAG_NAME: ${{ env.NEW_TAG }}
         with:
-          file: ${{ env.APK_FILES }} ${{ env.NEW_APK_FILES }}
+          tag_name: ${{ env.VERSION }}
+          files: |
+            ${{ env.APK_FILES }} 
+            ${{ env.NEW_APK_FILES }}
 
       - name: Delete old APK files
         run: |
