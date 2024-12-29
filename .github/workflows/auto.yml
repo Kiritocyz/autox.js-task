@@ -8,7 +8,6 @@ on:
       - '**/v6*.apk'
     types:
       - created
-      - modified
 
 jobs:
   upload:
