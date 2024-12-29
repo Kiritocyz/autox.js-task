@@ -16,26 +16,29 @@ jobs:
           apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
+      - name: Extract version from APK file name
+        run: |
+          # 提取版本号，假设版本号格式是类似 "_v6.0.apk"
+          version=$(echo ${{ env.APK_FILES }} | sed 's/.*_\(.*\).apk/\1/')
+          echo "VERSION=$version" >> $GITHUB_ENV
+
       - name: Wait for second file to be uploaded
         run: |
           while true
           do
-            new_apk_files=$(find . -name "*v7*.apk" -cnewer "${APK_FILES%% *}")
+            # 根据版本号和v7查找文件
+            new_apk_files=$(find . -name "*v7*${{ env.VERSION }}*.apk")
             if [ -n "$new_apk_files" ]; then
               echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
               break
             fi
+            echo "Waiting for v7 APK with version ${VERSION}..."
             sleep 10
           done
 
-      - name: Extract version from APK file name
-        run: |
-          version=$(echo ${{ env.APK_FILES }} | sed 's/.*_\(.*\).apk/\1/')
-          echo "VERSION=$version" >> $GITHUB_ENV
-
       - name: Update release tag
         run: |
-          new_tag=$(echo ${{ env.VERSION }})
+          new_tag="${{ env.VERSION }}"
           echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
 
       - name: Publish APK Releases
