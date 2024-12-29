@@ -20,7 +20,7 @@ jobs:
         run: |
           while true
           do
-            new_apk_files=$(find . -name "*.apk" -newer ${{ env.APK_FILES }})
+            new_apk_files=$(find . -name "*.apk" -cnewer "$(<${{ env.APK_FILES }} | head -n 1)")
             if [ -n "$new_apk_files" ]; then
               echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
               break
