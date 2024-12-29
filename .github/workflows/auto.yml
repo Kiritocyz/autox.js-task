@@ -15,15 +15,10 @@ jobs:
         run: |
           apk_files=$(find . -name "*v6*.apk")
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
-          echo "Current directory: $(pwd)"
-          echo "File name pattern: *v6*.apk"
-          apk_files=$(find . -name "*v6*.apk")
-          echo "Found APK files: $apk_files"
-          if [ -z "$apk_files" ]; then
-            echo "No APK files found"
-          fi
-          ls -la *.apk
-          exit 1
+          echo "Current Directory:"
+          pwd
+          echo "Listing all files:"
+          ls -la
 
       - name: Extract version from APK file name
         run: |
