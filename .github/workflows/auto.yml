@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - '**/v6*.apk'
+    types:
+      - created
+      - modified
 
 jobs:
   upload:
