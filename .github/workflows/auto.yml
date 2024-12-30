@@ -25,7 +25,7 @@ jobs:
           version=$(echo ${{ env.APK_FILES }} | sed 's/.*_\(.*\).apk/\1/')
           echo "VERSION=$version" >> $GITHUB_ENV
 
-      - name: Wait for second file to be uploaded
+      - name: Wait for v7 file
         run: |
           while true
           do
@@ -39,10 +39,21 @@ jobs:
             sleep 10
           done
       
+      - name: Delete old APK files
+        run: |
+          old_apk_files=$(find . -name "*.apk" -not -name "*${{ env.VERSION }}*")
+          if [ -n "$old_apk_files" ]; then
+            rm -f $old_apk_files
+            git add .
+            git commit -m "Delete old APK files"
+            git push origin main
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      
       - name: Publish APK Releases
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           RELEASE_NAME: 'My App Release'
           RELEASE_DESCRIPTION: 'Automated APK release'
           DRAFT: false
@@ -52,15 +63,3 @@ jobs:
           files: |
             ${{ env.APK_FILES }} 
             ${{ env.NEW_APK_FILES }}
-
-      - name: Delete old APK files
-        run: |
-          old_apk_files=$(find . -name "*.apk" -not -name "*${{ env.VERSION }}*")
-          if [ -n "$old_apk_files" ]; then
-            rm -f $old_apk_files
-            git add .
-            git commit -m "Delete old APK files"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        
