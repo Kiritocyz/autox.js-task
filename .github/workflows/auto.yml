@@ -41,7 +41,7 @@ jobs:
       
       - name: Delete old APK files
         run: |
-          old_apk_files=$(find . -name "*.apk" -not -name "*${{ env.VERSION }}*")
+          old_apk_files=$(find . -name "*.apk" -not -name "*任务_v${{ env.VERSION }}*")
           if [ -n "$old_apk_files" ]; then
             rm -f $old_apk_files
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
