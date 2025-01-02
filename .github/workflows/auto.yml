@@ -61,6 +61,7 @@ jobs:
           DRAFT: false
           PRERELEASE: false
         with:
+          body: Fix some bugs.
           tag_name: ${{ env.VERSION }}
           files: |
             ${{ env.APK_FILES }} 
