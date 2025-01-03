@@ -16,7 +16,7 @@ jobs:
       
       - name: Get APK files
         run: |          
-          apk_files=$(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/' | sort -V | tail -1)
+          apk_files=$(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/' | sort -n | tail -1)
           echo $(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/')
           echo $(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/' | sort -V)
           echo apk_files
