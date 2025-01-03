@@ -17,11 +17,6 @@ jobs:
       - name: Get APK files
         run: |          
           apk_files=$(find . -path "*/任务_v*.apk" | sed -r 's/(.*)\/任务_v([0-9.]+)\.apk/\2 \1\/任务_v\2.apk/' | sort -V -k 1 | tail -1 | cut -d' ' -f2-)
-          echo $(find . -path "*/任务_v*.apk" | sed -r 's/(.*)\/任务_v([0-9.]+)\.apk/\2 \1\/任务_v\2.apk/' )
-          echo $(find . -path "*/任务_v*.apk" | sed -r 's/(.*)\/任务_v([0-9.]+)\.apk/\2 \1\/任务_v\2.apk/' | sort -V -k 1 )
-          echo $(find . -path "*/任务_v*.apk" | sed -r 's/(.*)\/任务_v([0-9.]+)\.apk/\2 \1\/任务_v\2.apk/' | sort -V -k 1 | tail -1)
-          echo $(find . -path "*/任务_v*.apk" | sed -r 's/(.*)\/任务_v([0-9.]+)\.apk/\2 \1\/任务_v\2.apk/' | sort -V -k 1 | cut -d' ' -f2-)
-          echo $apk_files
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
       - name: Extract version from APK file name
@@ -30,29 +25,29 @@ jobs:
           version=$(echo ${{ env.APK_FILES }} | sed 's/.*v\(.*\).apk/\1/')
           echo "VERSION=$version" >> $GITHUB_ENV
       
-      # - name: Delete old APK files
-      #   run: |
-      #     old_apk_files=$(find . -path "*/*.apk" -not -path "*/任务_v${{ env.VERSION }}*")
-      #     if [ -n "$old_apk_files" ]; then
-      #       rm -f $old_apk_files
-      #       git config --local user.email "github-actions[bot]@users.noreply.github.com"
-      #       git config --local user.name "github-actions[bot]"
-      #       git add .
-      #       git commit -m "Delete old APK files"
-      #       git push origin main
-      #     fi
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Delete old APK files
+        run: |
+          old_apk_files=$(find . -path "*/*.apk" -not -path "*/任务_v${{ env.VERSION }}*")
+          if [ -n "$old_apk_files" ]; then
+            rm -f $old_apk_files
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add .
+            git commit -m "Delete old APK files"
+            git push origin main
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       
-      # - name: Publish APK Releases
-      #   uses: softprops/action-gh-release@v2
-      #   env:
-      #     RELEASE_NAME: 'My App Release'
-      #     RELEASE_DESCRIPTION: 'Automated APK release'
-      #     DRAFT: false
-      #     PRERELEASE: false
-      #   with:
-      #     body: Fix some bugs.
-      #     tag_name: ${{ env.VERSION }}
-      #     files: |
-      #       ${{ env.APK_FILES }} 
+      - name: Publish APK Releases
+        uses: softprops/action-gh-release@v2
+        env:
+          RELEASE_NAME: 'My App Release'
+          RELEASE_DESCRIPTION: 'Automated APK release'
+          DRAFT: false
+          PRERELEASE: false
+        with:
+          body: Fix some bugs.
+          tag_name: ${{ env.VERSION }}
+          files: |
+            ${{ env.APK_FILES }} 
