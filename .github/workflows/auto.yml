@@ -16,9 +16,10 @@ jobs:
       
       - name: Get APK files
         run: |          
-          apk_files=$(find . -path "*/任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn | head -1 | cut -d' ' -f2-)
-          echo $(find . -path "*/任务_v*.apk" -exec stat -c '%Y %n' {} \;)
-          echo $(find . -path "*/任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn)
+          apk_files=$(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/' | sort -V | tail -1)
+          echo $(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/')
+          echo $(find . -path "*/任务_v*.apk" | sed -r 's/.*任务_v([0-9.]+)\.apk/\1/' | sort -V)
+          echo apk_files
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
       - name: Extract version from APK file name
