@@ -16,7 +16,7 @@ jobs:
       
       - name: Get APK files
         run: |          
-          apk_files=$(find . -name "*任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn | head -1 | cut -d' ' -f2-)
+          apk_files=$(find . -path "*任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn | head -1 | cut -d' ' -f2-)
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
       - name: Extract version from APK file name
@@ -24,24 +24,10 @@ jobs:
           # 提取版本号
           version=$(echo ${{ env.APK_FILES }} | sed 's/.*v\(.*\).apk/\1/')
           echo "VERSION=$version" >> $GITHUB_ENV
-
-      # - name: Wait for v7 file
-      #   run: |
-      #     while true
-      #     do
-      #       # 根据版本号和v7查找文件
-      #       new_apk_files=$(find . -name "*v7*${{ env.VERSION }}*.apk")
-      #       if [ -n "$new_apk_files" ]; then
-      #         echo "NEW_APK_FILES=$new_apk_files" >> $GITHUB_ENV
-      #         break
-      #       fi
-      #       echo "Waiting for v7 APK with version ${VERSION}..."
-      #       sleep 10
-      #     done
       
       - name: Delete old APK files
         run: |
-          old_apk_files=$(find . -name "*.apk" -not -name "*任务_v${{ env.VERSION }}*")
+          old_apk_files=$(find . -path "*.apk" -not -name "*任务_v${{ env.VERSION }}*")
           if [ -n "$old_apk_files" ]; then
             rm -f $old_apk_files
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -65,4 +51,3 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             ${{ env.APK_FILES }} 
-            # ${{ env.NEW_APK_FILES }}
