@@ -16,7 +16,7 @@ jobs:
       
       - name: Get APK files
         run: |          
-          apk_files=$(find . -path "*任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn | head -1 | cut -d' ' -f2-)
+          apk_files=$(find . -path "./任务_v*.apk" -exec stat -c '%Y %n' {} \; | sort -rn | head -1 | cut -d' ' -f2-)
           echo "APK_FILES=$apk_files" >> $GITHUB_ENV
 
       - name: Extract version from APK file name
@@ -27,7 +27,7 @@ jobs:
       
       - name: Delete old APK files
         run: |
-          old_apk_files=$(find . -path "*.apk" -not -name "*任务_v${{ env.VERSION }}*")
+          old_apk_files=$(find . -path "./*.apk" -not -path "./任务_v${{ env.VERSION }}*")
           if [ -n "$old_apk_files" ]; then
             rm -f $old_apk_files
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
